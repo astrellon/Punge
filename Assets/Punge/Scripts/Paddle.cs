@@ -31,7 +31,7 @@ public class Paddle : MonoBehaviour {
 			RaycastHit hitInfo;
 			Vector3 bottom = this.transform.position - new Vector3(0.0f, Length * 0.5f, 0.0f);
 			Ray ray = new Ray(bottom, new Vector3(0, -1, 0));
-			bool collide = Physics.Raycast(ray, out hitInfo, 1000.0f);
+			bool collide = Physics.Raycast(ray, out hitInfo, 100.0f);
 			if (collide) {
 				if (hitInfo.distance > 0.1) {
 					this.transform.Translate(0.0f, -Speed, 0.0f);
