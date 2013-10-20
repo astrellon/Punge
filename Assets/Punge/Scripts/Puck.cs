@@ -30,9 +30,17 @@ public class Puck : MonoBehaviour {
 		}
 		
 		if (collision.gameObject.tag == "PaddleLeft") {
+			Paddle paddle = collision.gameObject.GetComponent<Paddle>();
+			if (paddle != null) {
+				AdjustAngle(paddle.CalcPuckBounce(this, collision.contacts[0]));	
+			}
 			lastHitLeft = true;	
 		}
 		else if (collision.gameObject.tag == "PaddleRight") {
+			Paddle paddle = collision.gameObject.GetComponent<Paddle>();
+			if (paddle != null) {
+				AdjustAngle(paddle.CalcPuckBounce(this, collision.contacts[0]));	
+			}
 			lastHitLeft = false;	
 		}
 		else if (collision.gameObject.tag == "GoalLeft") {
@@ -53,10 +61,17 @@ public class Puck : MonoBehaviour {
 		angle += Mathf.Round(Random.value * 4.0f) * 90.0f;
 		angle *= Mathf.PI / 180.0f;
 		Vector3 startVelocity = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0.0f);
+		startVelocity.x = 1.0f;
+		startVelocity.y = 0.0f;
 		startVelocity.Normalize();
 		startVelocity.Scale(new Vector3(Speed, Speed, 0.0f));
 		rigidbody.velocity = startVelocity;
 		Active = true;
+	}
+	
+	public void AdjustAngle(float angle) {
+		Quaternion rotation = Quaternion.Euler(0, 0, angle);
+		rigidbody.velocity = rotation * rigidbody.velocity;
 	}
 	
 	// Update is called once per frame

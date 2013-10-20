@@ -39,4 +39,13 @@ public class Paddle : MonoBehaviour {
 			}
 		}
 	}
+	
+	public float CalcPuckBounce(Puck puck, ContactPoint contact) {
+		if (Mathf.Abs(Vector3.Dot(contact.normal, new Vector3(1, 0, 0))) < 0.05) {
+			return 0.0f;
+		}
+		Vector3 localContact = transform.worldToLocalMatrix.MultiplyPoint(contact.point);
+		float amount = -360.0f * localContact.y / Mathf.PI * (contact.normal.x > 0 ? -1.0f : 1.0f);
+		return amount;
+	}
 }
