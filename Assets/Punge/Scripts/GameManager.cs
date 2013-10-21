@@ -3,8 +3,8 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour {
 	
-	//public int ScoreLeft = 0;
-	//public int ScoreRight = 0;
+	public static GameManager MainManager;
+	
 	public Player player1 = new Player();
 	public Player player2 = new Player();
 	public Arena arena;
@@ -17,9 +17,11 @@ public class GameManager : MonoBehaviour {
 		puck.gameManager = this;
 		
 		if (arena != null) {
-			player1.paddle = arena.transform.FindChild("PaddleLeft").gameObject.GetComponent<Paddle>();	
+			player1.paddle = arena.transform.FindChild("PaddleLeft").gameObject.GetComponent<Paddle>();
 			player2.paddle = arena.transform.FindChild("PaddleRight").gameObject.GetComponent<Paddle>();
 		}
+		
+		MainManager = this;
 	}
 	
 	void OnGUI () {

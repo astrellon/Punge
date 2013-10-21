@@ -9,6 +9,10 @@ public class Paddle : MonoBehaviour {
 	public KeyCode DownKey = KeyCode.DownArrow;
 	// Use this for initialization
 	void Start () {
+		UpdateSize();
+	}
+	
+	public void UpdateSize() {
 		Vector3 scale = this.transform.localScale;
 		scale.y = Length;
 		this.transform.localScale = scale;

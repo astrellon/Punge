@@ -7,11 +7,11 @@ public class Puck : MonoBehaviour {
 	public GameManager gameManager;
 	public bool Active = false;
 	
-	private bool lastHitLeft = false;
+	public bool lastHitLeft { get; private set; }
 
 	// Use this for initialization
 	void Start () {
-		
+		lastHitLeft = false;
 	}
 	
 	float dot(Vector3 v1, Vector3 v2) {
