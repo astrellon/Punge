@@ -9,6 +9,7 @@ public class Powerup : MonoBehaviour {
 		get;
 		set;
 	}
+	protected bool powerupEnabled = false;
 	protected Player forPlayer = null;
 	
 	protected float startTime;
@@ -17,10 +18,17 @@ public class Powerup : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		direction.x = (Random.value > 0.5f ? 4.0f : -4.0f);
+	}
+	
+	public void Enable() {
 		this.rigidbody.velocity = direction;
+		powerupEnabled = true;
 	}
 	
 	void OnTriggerEnter(Collider collider) {
+		if (!powerupEnabled) {
+			return;	
+		}
 		if (collider.gameObject.tag == "Puck") {
 			Puck puck = collider.gameObject.GetComponent<Puck>();
 			if (puck == null) {
@@ -53,7 +61,7 @@ public class Powerup : MonoBehaviour {
 		byPlayer.paddle.UpdateSize();
 		active = true;
 		renderer.enabled = false;
-		rigidbody.velocity = new Vector3(0,0,0);
+		//rigidbody.velocity = new Vector3(0,0,0);
 		startTime = Time.time;
 	}
 	public void DeactivatePowerup() {

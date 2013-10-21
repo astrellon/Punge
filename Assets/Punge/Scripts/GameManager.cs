@@ -12,6 +12,10 @@ public class GameManager : MonoBehaviour {
 	public int WinningScore = 5;
 	public Puck puck;
 	private bool waitingToStart = true;
+	
+	private float nextSpawnTime = 0.0f;
+	
+	public GameObject widePaddle;
 	// Use this for initialization
 	void Start () {
 		puck.gameManager = this;
@@ -22,6 +26,16 @@ public class GameManager : MonoBehaviour {
 		}
 		
 		MainManager = this;
+	}
+	
+	public void SpawnPowerup(string type) {
+		GameObject obj = (GameObject)Instantiate(widePaddle, new Vector3(-4,0,0), transform.rotation);
+		Powerup powerup = obj.GetComponent<Powerup>();
+		Vector3 newPos = new Vector3(0, 0, 0);
+		newPos.x = Random.value * arena.Width * 0.5f;
+		newPos.y = Random.value * arena.Height * 0.75f;
+		obj.transform.position = newPos;
+		powerup.Enable();
 	}
 	
 	void OnGUI () {
@@ -56,21 +70,39 @@ public class GameManager : MonoBehaviour {
 		else {
 			player1.score += amount;
 		}
-		puck.Reset();
-		waitingToStart = true;
+		
 		
 		if (player1.score >= WinningScore || player2.score >= WinningScore) {	
 			winner = true;
 		}
+		
+		WaitStart();
+	}
+	
+	float CalcNextSpawnTime() {
+		return Time.time + Random.value * 10.0f + 10.0f;
+	}
+	public void StartGame() {
+		nextSpawnTime = CalcNextSpawnTime();
+		if (winner) {
+			ResetScores();	
+		}
+		waitingToStart = false;
+		puck.Go();
+	}
+	public void WaitStart() {
+		puck.Reset();
+		waitingToStart = true;
+		nextSpawnTime = 0.0f;
 	}
 	// Update is called once per frame
 	void Update () {
 		if (waitingToStart && Input.GetKeyDown(KeyCode.Space)) {
-			if (winner) {
-				ResetScores();	
-			}
-			waitingToStart = false;
-			puck.Go();
+			StartGame ();
+		}
+		if (Time.time >= nextSpawnTime && nextSpawnTime > 0.0f) {
+			SpawnPowerup("ASD");
+			nextSpawnTime = CalcNextSpawnTime();
 		}
 	}
 }
