@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour {
 	
@@ -16,6 +17,10 @@ public class GameManager : MonoBehaviour {
 	private float nextSpawnTime = 0.0f;
 	
 	public GameObject widePaddle;
+	
+	private GameObject powerupParent;
+	
+	protected List<Powerup> activePowerups = new List<Powerup>();
 	// Use this for initialization
 	void Start () {
 		puck.gameManager = this;
@@ -23,17 +28,28 @@ public class GameManager : MonoBehaviour {
 		if (arena != null) {
 			player1.paddle = arena.transform.FindChild("PaddleLeft").gameObject.GetComponent<Paddle>();
 			player2.paddle = arena.transform.FindChild("PaddleRight").gameObject.GetComponent<Paddle>();
+			MakePowerupsParent();
 		}
 		
 		MainManager = this;
 	}
 	
+	public void AddActivePowerup(Powerup powerup) {
+		if (!activePowerups.Contains(powerup)) {
+			activePowerups.Add(powerup);	
+		}
+	}
+	public void RemoveActivePowerup(Powerup powerup) {
+		activePowerups.Remove(powerup);
+	}
+	
 	public void SpawnPowerup(string type) {
 		GameObject obj = (GameObject)Instantiate(widePaddle, new Vector3(-4,0,0), transform.rotation);
+		obj.transform.parent = powerupParent.transform;
 		Powerup powerup = obj.GetComponent<Powerup>();
 		Vector3 newPos = new Vector3(0, 0, 0);
-		newPos.x = Random.value * arena.Width * 0.5f;
-		newPos.y = Random.value * arena.Height * 0.75f;
+		newPos.x = (Random.value - 0.5f) * arena.Width * 0.5f;
+		newPos.y = (Random.value - 0.5f) * arena.Height * 0.75f;
 		obj.transform.position = newPos;
 		powerup.Enable();
 	}
@@ -80,7 +96,7 @@ public class GameManager : MonoBehaviour {
 	}
 	
 	float CalcNextSpawnTime() {
-		return Time.time + Random.value * 10.0f + 10.0f;
+		return Time.time + Random.value * 2.0f + 1.0f;
 	}
 	public void StartGame() {
 		nextSpawnTime = CalcNextSpawnTime();
@@ -94,6 +110,22 @@ public class GameManager : MonoBehaviour {
 		puck.Reset();
 		waitingToStart = true;
 		nextSpawnTime = 0.0f;
+		
+		foreach (Powerup powerup in activePowerups) {
+			powerup.DeactivatePowerup(false);
+			powerup.Disable();
+		}
+		
+		activePowerups.Clear();
+		MakePowerupsParent();
+	}
+	
+	void MakePowerupsParent() {
+		if (powerupParent != null) {
+			Destroy(powerupParent);
+		}
+		powerupParent = new GameObject("Powerups");
+		powerupParent.transform.parent = arena.transform;
 	}
 	// Update is called once per frame
 	void Update () {
