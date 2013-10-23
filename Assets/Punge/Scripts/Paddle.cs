@@ -7,6 +7,7 @@ public class Paddle : MonoBehaviour {
 	public float Speed = 0.2f;
 	public KeyCode UpKey = KeyCode.UpArrow;
 	public KeyCode DownKey = KeyCode.DownArrow;
+	public Player Owner { get; set; }
 	// Use this for initialization
 	void Start () {
 		UpdateSize();

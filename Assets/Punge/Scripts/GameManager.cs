@@ -6,65 +6,59 @@ public class GameManager : MonoBehaviour {
 	
 	public static GameManager MainManager;
 	
-	public Player player1 = new Player();
-	public Player player2 = new Player();
-	public Arena arena;
-	private bool winner = false;
+	public Player Player1 = new Player();
+	public Player Player2 = new Player();
+	public Arena Arena;
+	private bool Winner = false;
 	public int WinningScore = 5;
-	public Puck puck;
-	private bool waitingToStart = true;
+	public Puck Puck;
+	private bool WaitingToStart = true;
 	
-	private float nextSpawnTime = 0.0f;
+	private float NextSpawnTime = 0.0f;
 	
-	public GameObject widePaddle;
+	public GameObject WidePaddle;
 	
-	private GameObject powerupParent;
+	private GameObject PowerupParent;
 	
-	protected List<Powerup> activePowerups = new List<Powerup>();
 	// Use this for initialization
 	void Start () {
-		puck.gameManager = this;
+		Puck.gameManager = this;
 		
-		if (arena != null) {
-			player1.paddle = arena.transform.FindChild("PaddleLeft").gameObject.GetComponent<Paddle>();
-			player2.paddle = arena.transform.FindChild("PaddleRight").gameObject.GetComponent<Paddle>();
+		if (Arena != null) {
+			Player1.Paddle = Arena.transform.FindChild("PaddleLeft").gameObject.GetComponent<Paddle>();
+			Player1.Paddle.Owner = Player1;
+			Player2.Paddle = Arena.transform.FindChild("PaddleRight").gameObject.GetComponent<Paddle>();
+			Player2.Paddle.Owner = Player2;
 			MakePowerupsParent();
 		}
 		
 		MainManager = this;
-	}
-	
-	public void AddActivePowerup(Powerup powerup) {
-		if (!activePowerups.Contains(powerup)) {
-			activePowerups.Add(powerup);	
-		}
-	}
-	public void RemoveActivePowerup(Powerup powerup) {
-		activePowerups.Remove(powerup);
+		
+		Powerup.AddPowerup(new WidePaddle());
 	}
 	
 	public void SpawnPowerup(string type) {
-		GameObject obj = (GameObject)Instantiate(widePaddle, new Vector3(-4,0,0), transform.rotation);
-		obj.transform.parent = powerupParent.transform;
-		Powerup powerup = obj.GetComponent<Powerup>();
+		GameObject obj = (GameObject)Instantiate(WidePaddle, new Vector3(-4,0,0), transform.rotation);
+		obj.transform.parent = PowerupParent.transform;
+		PowerupComponent powerup = obj.GetComponent<PowerupComponent>();
 		Vector3 newPos = new Vector3(0, 0, 0);
-		newPos.x = (Random.value - 0.5f) * arena.Width * 0.5f;
-		newPos.y = (Random.value - 0.5f) * arena.Height * 0.75f;
+		newPos.x = (Random.value - 0.5f) * Arena.Width * 0.5f;
+		newPos.y = (Random.value - 0.5f) * Arena.Height * 0.75f;
 		obj.transform.position = newPos;
 		powerup.Enable();
 	}
 	
 	void OnGUI () {
-		GUI.Label(new Rect(10.0f, 10.0f, 100.0f, 20.0f), "Player 1: " + player1.score);	
-		GUI.Label(new Rect(10.0f, 30.0f, 100.0f, 20.0f), "Player 2: " + player2.score);
-		if (waitingToStart) {
+		GUI.Label(new Rect(10.0f, 10.0f, 100.0f, 20.0f), "Player 1: " + Player1.Score);	
+		GUI.Label(new Rect(10.0f, 30.0f, 100.0f, 20.0f), "Player 2: " + Player2.Score);
+		if (WaitingToStart) {
 			GUI.Label(new Rect(300.0f, 150.0f, 200.0f, 20.0f), "Press Space");	
 		}
-		if (winner) {
-			if (player1.score == player2.score && player1.score >= WinningScore) {
+		if (Winner) {
+			if (Player1.Score == Player2.Score && Player1.Score >= WinningScore) {
 				GUI.Label(new Rect(300.0f, 100.0f, 200.0f, 20.0f), "It's a Tie");	
 			}
-			else if (player1.score > player2.score) {
+			else if (Player1.Score > Player2.Score) {
 				GUI.Label(new Rect(300.0f, 100.0f, 200.0f, 20.0f), "Player 1 Wins!");
 			}
 			else {
@@ -74,22 +68,22 @@ public class GameManager : MonoBehaviour {
 	}
 	
 	public void ResetScores() {
-		player1.score = 0;
-		player2.score = 0;
-		winner = false;
+		Player1.Score = 0;
+		Player2.Score = 0;
+		Winner = false;
 	}
 	
 	public void HitGoal(bool left, int amount = 1) {
 		if (left) {	
-			player2.score += amount;
+			Player2.Score += amount;
 		}
 		else {
-			player1.score += amount;
+			Player1.Score += amount;
 		}
 		
 		
-		if (player1.score >= WinningScore || player2.score >= WinningScore) {	
-			winner = true;
+		if (Player1.Score >= WinningScore || Player2.Score >= WinningScore) {	
+			Winner = true;
 		}
 		
 		WaitStart();
@@ -99,42 +93,49 @@ public class GameManager : MonoBehaviour {
 		return Time.time + Random.value * 2.0f + 1.0f;
 	}
 	public void StartGame() {
-		nextSpawnTime = CalcNextSpawnTime();
-		if (winner) {
+		NextSpawnTime = CalcNextSpawnTime();
+		if (Winner) {
 			ResetScores();	
 		}
-		waitingToStart = false;
-		puck.Go();
+		WaitingToStart = false;
+		Puck.Go();
 	}
 	public void WaitStart() {
-		puck.Reset();
-		waitingToStart = true;
-		nextSpawnTime = 0.0f;
+		Puck.Reset();
+		WaitingToStart = true;
+		NextSpawnTime = 0.0f;
+		Vector3 newPos = Player1.Paddle.transform.position;
+		newPos.y = 0.0f;
+		Player1.Paddle.transform.position = newPos;
+		Player1.ResetPowerups();
+		newPos = Player2.Paddle.transform.position;
+		newPos.y = 0.0f;
+		Player2.Paddle.transform.position = newPos;
+		Player2.ResetPowerups();
 		
-		foreach (Powerup powerup in activePowerups) {
-			powerup.DeactivatePowerup(false);
-			powerup.Disable();
-		}
-		
-		activePowerups.Clear();
 		MakePowerupsParent();
 	}
 	
 	void MakePowerupsParent() {
-		if (powerupParent != null) {
-			Destroy(powerupParent);
+		if (PowerupParent != null) {
+			Destroy(PowerupParent);
 		}
-		powerupParent = new GameObject("Powerups");
-		powerupParent.transform.parent = arena.transform;
+		PowerupParent = new GameObject("Powerups");
+		PowerupParent.transform.parent = Arena.transform;
 	}
 	// Update is called once per frame
 	void Update () {
-		if (waitingToStart && Input.GetKeyDown(KeyCode.Space)) {
+		if (WaitingToStart && Input.GetKeyDown(KeyCode.Space)) {
 			StartGame ();
 		}
-		if (Time.time >= nextSpawnTime && nextSpawnTime > 0.0f) {
-			SpawnPowerup("ASD");
-			nextSpawnTime = CalcNextSpawnTime();
+		if (Time.time >= NextSpawnTime && NextSpawnTime > 0.0f) {
+			SpawnPowerup("WidePaddle");
+			NextSpawnTime = CalcNextSpawnTime();
 		}
+		if (!WaitingToStart) {
+			Player1.Update();
+			Player2.Update();
+		}
+		
 	}
 }
