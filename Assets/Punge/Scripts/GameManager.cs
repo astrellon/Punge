@@ -30,6 +30,9 @@ public class GameManager : MonoBehaviour {
 	void Start () {
 		Puck.gameManager = this;
 		
+		Powerup widePaddle = new WidePaddle();
+		Powerup.AddPowerup(widePaddle);
+		
 		if (Arena != null) {
 			Player1.Paddle = Arena.transform.FindChild("PaddleLeft").gameObject.GetComponent<Paddle>();
 			Player1.Paddle.Owner = Player1;
@@ -45,11 +48,19 @@ public class GameManager : MonoBehaviour {
 			PressStartGUI.enabled = false;
 			WinnerGUI = UI.transform.FindChild("Winner").GetComponent<GUIText>();
 			WinnerGUI.gameObject.SetActive(false);
+			
+			StatusComponent player1Status = UI.transform.FindChild("WidePaddleGUI1").GetComponent<StatusComponent>();
+			player1Status.ForPlayer = Player1;
+			player1Status.ForPowerup = widePaddle;
+			
+			StatusComponent player2Status = UI.transform.FindChild("WidePaddleGUI2").GetComponent<StatusComponent>();
+			player2Status.ForPlayer = Player2;
+			player2Status.ForPowerup = widePaddle;
 		}
 		
 		MainManager = this;
 		
-		Powerup.AddPowerup(new WidePaddle());
+		
 	}
 	
 	public void SpawnPowerup(string type) {
