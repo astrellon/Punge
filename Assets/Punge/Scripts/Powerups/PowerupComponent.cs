@@ -26,8 +26,6 @@ public class PowerupComponent : MonoBehaviour {
 	}
 	
 	void OnTriggerEnter(Collider collider) {
-		Debug.Log ("Trigger? " + PowerupEnabled);
-		
 		string t = collider.gameObject.tag;
 		if (t == "Puck") {
 			Puck puck = collider.gameObject.GetComponent<Puck>();
@@ -59,9 +57,6 @@ public class PowerupComponent : MonoBehaviour {
 		PowerupEnabled = false;
 		Powerup powerup = Powerup.FindPowerup(PowerupName);
 		byPlayer.AddPowerup(powerup);
-		/*if (powerup != null) {
-			powerup.Activate(byPlayer, stackSize);	
-		}*/
 		
 		Destroy(gameObject);
 	}

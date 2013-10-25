@@ -26,11 +26,11 @@ public class Player {
 		}
 		public void ResetTimer() {
 			StartTime = Time.time;
-			Debug.Log ("Setting start time: " + StartTime);
 		}
 	}
 	
 	public int Score { get; set; }
+	public GUIText ScoreDisplay { get; set; }
 	public Paddle Paddle { get; set; }
 	public Dictionary<string, PowerupStack> PowerupStacks { get; private set; }
 	

@@ -46,6 +46,7 @@ public class Paddle : MonoBehaviour {
 	}
 	
 	public float CalcPuckBounce(Puck puck, ContactPoint contact) {
+		// If the contact normal is almost vertical then don't affect anything.
 		if (Mathf.Abs(Vector3.Dot(contact.normal, new Vector3(1, 0, 0))) < 0.05) {
 			return 0.0f;
 		}

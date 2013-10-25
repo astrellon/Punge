@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour {
 	
 	public Player Player1 = new Player();
 	public Player Player2 = new Player();
+	public GameObject UI;
 	public Arena Arena;
 	private bool Winner = false;
 	public int WinningScore = 5;
@@ -16,9 +17,14 @@ public class GameManager : MonoBehaviour {
 	
 	private float NextSpawnTime = 0.0f;
 	
+	// Prefabs
 	public GameObject WidePaddle;
+	public GameObject WidePaddleGUI;
 	
 	private GameObject PowerupParent;
+	
+	private GUIText PressStartGUI;
+	private GUIText WinnerGUI;
 	
 	// Use this for initialization
 	void Start () {
@@ -30,6 +36,15 @@ public class GameManager : MonoBehaviour {
 			Player2.Paddle = Arena.transform.FindChild("PaddleRight").gameObject.GetComponent<Paddle>();
 			Player2.Paddle.Owner = Player2;
 			MakePowerupsParent();
+		}
+		
+		if (UI != null) {
+			Player1.ScoreDisplay = UI.transform.FindChild("Player1").GetComponent<GUIText>();
+			Player2.ScoreDisplay = UI.transform.FindChild("Player2").GetComponent<GUIText>();
+			PressStartGUI = UI.transform.FindChild("PressStart").GetComponent<GUIText>();
+			PressStartGUI.enabled = false;
+			WinnerGUI = UI.transform.FindChild("Winner").GetComponent<GUIText>();
+			WinnerGUI.gameObject.SetActive(false);
 		}
 		
 		MainManager = this;
@@ -48,29 +63,12 @@ public class GameManager : MonoBehaviour {
 		powerup.Enable();
 	}
 	
-	void OnGUI () {
-		GUI.Label(new Rect(10.0f, 10.0f, 100.0f, 20.0f), "Player 1: " + Player1.Score);	
-		GUI.Label(new Rect(10.0f, 30.0f, 100.0f, 20.0f), "Player 2: " + Player2.Score);
-		if (WaitingToStart) {
-			GUI.Label(new Rect(300.0f, 150.0f, 200.0f, 20.0f), "Press Space");	
-		}
-		if (Winner) {
-			if (Player1.Score == Player2.Score && Player1.Score >= WinningScore) {
-				GUI.Label(new Rect(300.0f, 100.0f, 200.0f, 20.0f), "It's a Tie");	
-			}
-			else if (Player1.Score > Player2.Score) {
-				GUI.Label(new Rect(300.0f, 100.0f, 200.0f, 20.0f), "Player 1 Wins!");
-			}
-			else {
-				GUI.Label(new Rect(300.0f, 100.0f, 200.0f, 20.0f), "Player 2 Wins!");
-			}
-		}
-	}
-	
 	public void ResetScores() {
 		Player1.Score = 0;
 		Player2.Score = 0;
 		Winner = false;
+		WinnerGUI.gameObject.SetActive(false);
+		UpdateScore();
 	}
 	
 	public void HitGoal(bool left, int amount = 1) {
@@ -81,12 +79,35 @@ public class GameManager : MonoBehaviour {
 			Player1.Score += amount;
 		}
 		
-		
+		UpdateScore();
 		if (Player1.Score >= WinningScore || Player2.Score >= WinningScore) {	
 			Winner = true;
 		}
-		
+		UpdateWinner();
 		WaitStart();
+	}
+	
+	void UpdateScore() {
+		Player1.ScoreDisplay.text = "Player 1: " + Player1.Score;
+		Player2.ScoreDisplay.text = "Player 2: " + Player2.Score;
+	}
+	void UpdateWinner() {
+		if (Winner) {
+			WinnerGUI.gameObject.SetActive(true);
+			
+			if (Player1.Score == Player2.Score && Player1.Score >= WinningScore) {
+				WinnerGUI.text = "It's a Tie";
+			}
+			else if (Player1.Score > Player2.Score) {
+				WinnerGUI.text = "Player 1 Wins!";
+			}
+			else {
+				WinnerGUI.text = "Player 2 Wins!";
+			}
+		}
+		else {
+			WinnerGUI.gameObject.SetActive(false);	
+		}
 	}
 	
 	float CalcNextSpawnTime() {
@@ -99,6 +120,7 @@ public class GameManager : MonoBehaviour {
 		}
 		WaitingToStart = false;
 		Puck.Go();
+		UpdateWinner();
 	}
 	public void WaitStart() {
 		Puck.Reset();
@@ -137,5 +159,6 @@ public class GameManager : MonoBehaviour {
 			Player2.Update();
 		}
 		
+		PressStartGUI.enabled = WaitingToStart;
 	}
 }
