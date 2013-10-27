@@ -17,10 +17,6 @@ public class GameManager : MonoBehaviour {
 	
 	private float NextSpawnTime = 0.0f;
 	
-	// Prefabs
-	public GameObject WidePaddle;
-	public GameObject WidePaddleGUI;
-	
 	private GameObject PowerupParent;
 	
 	private GUIText PressStartGUI;
@@ -56,22 +52,28 @@ public class GameManager : MonoBehaviour {
 			StatusComponent player2Status = UI.transform.FindChild("WidePaddleGUI2").GetComponent<StatusComponent>();
 			player2Status.ForPlayer = Player2;
 			player2Status.ForPowerup = widePaddle;
+			
+			player1Status.UpdateTextures();
+			player2Status.UpdateTextures();
 		}
 		
-		MainManager = this;
-		
-		
+		MainManager = this;	
 	}
 	
 	public void SpawnPowerup(string type) {
-		GameObject obj = (GameObject)Instantiate(WidePaddle, new Vector3(-4,0,0), transform.rotation);
+		Powerup powerup = Powerup.FindPowerup(type);
+		if (powerup == null) {
+			Debug.Log("Unable to find powerup " + type);
+			return;	
+		}
+		GameObject obj = (GameObject)Instantiate(powerup.PowerupPrefab, new Vector3(-4,0,0), transform.rotation);
 		obj.transform.parent = PowerupParent.transform;
-		PowerupComponent powerup = obj.GetComponent<PowerupComponent>();
+		PowerupComponent powerupComp = obj.GetComponent<PowerupComponent>();
 		Vector3 newPos = new Vector3(0, 0, 0);
 		newPos.x = (Random.value - 0.5f) * Arena.Width * 0.5f;
 		newPos.y = (Random.value - 0.5f) * Arena.Height * 0.75f;
 		obj.transform.position = newPos;
-		powerup.Enable();
+		powerupComp.Enable();
 	}
 	
 	public void ResetScores() {
@@ -102,6 +104,7 @@ public class GameManager : MonoBehaviour {
 		Player1.ScoreDisplay.text = "Player 1: " + Player1.Score;
 		Player2.ScoreDisplay.text = "Player 2: " + Player2.Score;
 	}
+	
 	void UpdateWinner() {
 		if (Winner) {
 			WinnerGUI.gameObject.SetActive(true);

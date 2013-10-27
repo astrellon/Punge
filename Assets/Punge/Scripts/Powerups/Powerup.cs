@@ -21,11 +21,16 @@ public class Powerup {
 	public string Name { get; protected set; }
 	public float Duration { get; protected set; }
 	public int MaxStackSize { get; protected set; }
+	public Texture2D StatusBack { get; set; }
+	public Color ComponentColour { get; set; }
+	
+	public GameObject PowerupPrefab { get; set; }
 	
 	public Powerup() {
 		Name = "Unknown";
 		Duration = 6.0f;
 		MaxStackSize = 5;
+		ComponentColour = new Color(0.9f, 0.9f, 0.9f, 1.0f);
 	}
 	
 	public virtual void Activate(Player player, int stackSize) {

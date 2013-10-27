@@ -9,8 +9,8 @@ public class StatusComponent : MonoBehaviour {
 	//protected GUITexture DurationFill;
 	protected int totalWidth = 24;
 	
-	public Texture2D DurationBack;
-	public Texture2D DurationFill;
+	protected Texture2D DurationBack;
+	protected Texture2D DurationFill;
 	
 	protected float durationPercent = 0.0f;
 	
@@ -21,9 +21,18 @@ public class StatusComponent : MonoBehaviour {
 		SizeText = transform.FindChild("Size").GetComponent<GUIText>();
 	}
 	
+	public void UpdateTextures() {
+		GetComponent<GUITexture>().texture = ForPowerup.StatusBack;
+		DurationBack = (Texture2D)Resources.LoadAssetAtPath(@"Assets\Punge\Textures\PowerupDuration.png", typeof(Texture2D));
+		DurationFill = (Texture2D)Resources.LoadAssetAtPath(@"Assets\Punge\Textures\PowerupDurationFill.png", typeof(Texture2D));	
+	}
+	
 	void OnGUI() {
 		int x = (int)((float)Screen.width * transform.localPosition.x);
 		int y = (int)((float)Screen.height * transform.localPosition.y);
+		GUI.BeginGroup(new Rect(x, y, 32.0f, 32.0f));
+		//GUI.DrawTexture(new Rect(0, 0, 0, 0), ForPowerup.StatusBack);
+		GUI.EndGroup();
 		size.x = x - 14;
 		size.y = Screen.height - y + 20;
 		GUI.BeginGroup(size);
