@@ -27,7 +27,6 @@ public class GameManager : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		//Puck.gameManager = this;
 		PuckPrefab = (GameObject)Resources.LoadAssetAtPath(@"Assets\Punge\Prefabs\Puck.prefab", typeof(GameObject));
 		
 		Powerup widePaddle = new WidePaddle();
@@ -63,6 +62,13 @@ public class GameManager : MonoBehaviour {
 			player1Status.UpdateTextures();
 			player2Status.UpdateTextures();
 		}
+		
+		// Pucks ignore hitting other pucks.
+		// This is because there's a good chance that after a collision that one may end up with a weird
+		// speed or angle that makes further play hard and unpredictable.
+		// Should look at it again later and perhaps force a minimum speed after a collision,
+		// although then you could end up with a system that always has energy being put into it.
+		Physics.IgnoreLayerCollision(10, 10);
 		
 		MainManager = this;	
 	}
