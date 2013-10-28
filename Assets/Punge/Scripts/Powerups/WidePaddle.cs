@@ -7,7 +7,7 @@ public class WidePaddle : Powerup {
 		base()
 	{	
 		Name = "WidePaddle";
-		ComponentColour = new Color(0.9f, 0.1f, 0.1f, 1.0f);
+		ComponentColour = new Color(0.5f, 0.1f, 0.1f, 1.0f);
 		StatusBack = (Texture2D)Resources.LoadAssetAtPath(@"Assets\Punge\Textures\WidePaddleSmall.png", typeof(Texture2D));
 		PowerupPrefab = (GameObject)Resources.LoadAssetAtPath(@"Assets\Punge\Prefabs\WidePaddle.prefab", typeof(GameObject));
 	}

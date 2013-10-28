@@ -32,7 +32,7 @@ public class PowerupComponent : MonoBehaviour {
 			if (puck == null) {
 				return;
 			}
-			if (puck.lastHitLeft) {
+			if (puck.LastHitLeft) {
 				ActivatePowerup(GameManager.MainManager.Player1, 1);
 			}
 			else {

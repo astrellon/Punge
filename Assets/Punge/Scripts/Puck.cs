@@ -4,21 +4,18 @@ using System.Collections;
 public class Puck : MonoBehaviour {
 	
 	public float Speed = 20.0f;
-	public GameManager gameManager;
+	public GameManager Manager;
 	public bool Active = false;
 	
-	public bool lastHitLeft { get; private set; }
+	public bool LastHitLeft { get; private set; }
 
 	// Use this for initialization
 	void Start () {
-		lastHitLeft = false;
+		LastHitLeft = false;
 	}
 	
-	float dot(Vector3 v1, Vector3 v2) {
-		return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;	
-	}
 	void OnCollisionEnter(Collision collision) {
-		float dotted = dot(collision.relativeVelocity.normalized, new Vector3(0, 1.0f, 0));
+		float dotted = Vector3.Dot(collision.relativeVelocity.normalized, new Vector3(0, 1.0f, 0));
 		// Check if the new velocity is too verticle, if it is add a random horizontal velocity.
 		// Horizontal velocities shouldn't be a problem as there are paddles.
 		if (Mathf.Abs(Mathf.Abs(dotted) - 1) < 0.005) {
@@ -34,20 +31,20 @@ public class Puck : MonoBehaviour {
 			if (paddle != null) {
 				AdjustAngle(paddle.CalcPuckBounce(this, collision.contacts[0]));	
 			}
-			lastHitLeft = true;	
+			LastHitLeft = true;	
 		}
 		else if (collision.gameObject.tag == "PaddleRight") {
 			Paddle paddle = collision.gameObject.GetComponent<Paddle>();
 			if (paddle != null) {
 				AdjustAngle(paddle.CalcPuckBounce(this, collision.contacts[0]));	
 			}
-			lastHitLeft = false;	
+			LastHitLeft = false;	
 		}
 		else if (collision.gameObject.tag == "GoalLeft") {
-			gameManager.HitGoal(true);
+			Manager.HitGoal(this, true);
 		}
 		else if (collision.gameObject.tag == "GoalRight") {
-			gameManager.HitGoal(false);	
+			Manager.HitGoal(this, false);	
 		}
 	}
 	
@@ -56,14 +53,16 @@ public class Puck : MonoBehaviour {
 		this.rigidbody.velocity = new Vector3(0, 0, 0);
 		Active = false;
 	}
-	public void Go() {
-		float angle = Random.value * 90.0f;
-		angle += Mathf.Round(Random.value * 4.0f) * 90.0f;
-		angle *= Mathf.PI / 180.0f;
-		Vector3 startVelocity = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0.0f);
-		startVelocity.x = 1.0f;
-		startVelocity.y = 0.0f;
-		startVelocity.Normalize();
+	public void Go(bool randomiseAngle) {
+		Vector3 startVelocity = new Vector3(1.0f, 0.0f, 0.0f);
+		if (randomiseAngle) {
+			float angle = Random.value * 90.0f;
+			angle += Mathf.Round(Random.value * 4.0f) * 90.0f;
+			angle *= Mathf.PI / 180.0f;
+			startVelocity.x = Mathf.Cos(angle);
+			startVelocity.y = Mathf.Sin(angle);
+			startVelocity.Normalize();
+		}
 		startVelocity.Scale(new Vector3(Speed, Speed, 0.0f));
 		rigidbody.velocity = startVelocity;
 		Active = true;

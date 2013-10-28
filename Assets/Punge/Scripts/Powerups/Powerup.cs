@@ -40,4 +40,8 @@ public class Powerup {
 		
 	}
 	
+	public virtual void Activate(Puck puck) {
+		
+	}
+	
 }
