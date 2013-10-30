@@ -21,19 +21,27 @@ public class Slider : MonoBehaviour {
 			else if (value > MaxValue) {
 				sliderValue = MaxValue;	
 			}
+			else if (StepSize > 0.0f) {
+				float temp = value / StepSize;
+				temp = Mathf.Round (temp) * StepSize;
+				sliderValue = temp;
+			}
 			else {
-				sliderValue = value;	
+				sliderValue = value;
 			}
 		}
 	}
+	public float StartValue = 0.5f;
 	public float MinValue = 0.0f;
 	public float MaxValue = 1.0f;
+	public float StepSize = 0.1f;
 	protected float size = 1.0f;
 	protected Transform backQuad;
 	public string Label = "Slider";
 	
 	// Use this for initialization
 	void Start () {
+		SliderValue = StartValue;
 		thumb = transform.FindChild("Thumb").gameObject;
 		valueText = transform.FindChild("Value").GetComponent<TextMesh>();
 		backQuad = transform.FindChild("Back").transform;
