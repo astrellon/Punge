@@ -41,6 +41,10 @@ public class GameManager : MonoBehaviour {
 			MakePowerupsParent();
 			MakePuckParent();
 			SpawnPuck(0.0f, 0.0f).Reset();
+			
+			Arena.Width = OptionValues.ArenaWidth;
+			Arena.Height = OptionValues.ArenaHeight;
+			Arena.UpdateSize();
 		}
 		
 		if (UI != null) {

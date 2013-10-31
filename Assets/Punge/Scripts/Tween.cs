@@ -7,10 +7,10 @@ public class Tween : MonoBehaviour {
 	public Vector3 EndValue;
 	public float Duration = 1.0f;
 	protected float endTime = 0.0f;
-	protected bool active = false;
+	protected bool tweenActive = false;
 	
 	public void SetActive(bool active, bool autoSetStartValue = false) {
-		this.active = active;
+		tweenActive = active;
 		endTime = Time.time + Duration;
 		if (autoSetStartValue) {
 			StartValue = transform.localPosition;	
@@ -24,24 +24,29 @@ public class Tween : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (active) {
+		if (tweenActive) {
 			float t = 1.0f - ((endTime - Time.time) / Duration);
 			if (t < 0.0f) {
 				t = 0.0f;
 			}
 			if (t > 1.0f) {
 				t = 1.0f;
-				active = false;
+				tweenActive = false;
 			}
 			Vector3 temp = new Vector3();
-			temp.x = Lerp(StartValue.x, EndValue.x, t);
-			temp.y = Lerp(StartValue.y, EndValue.y, t);
-			temp.z = Lerp(StartValue.z, EndValue.z, t);
+			temp.x = EaseInOut(StartValue.x, EndValue.x, t);
+			temp.y = EaseInOut(StartValue.y, EndValue.y, t);
+			temp.z = EaseInOut(StartValue.z, EndValue.z, t);
 			transform.localPosition = temp;
 		}
 	}
 	
-	float Lerp(float a, float b, float t) {
-		return 	a + (b - a) * t;
+	float EaseInOut(float start, float end, float t) {
+		float temp = 1.0f - (1.0f + Mathf.Cos(Mathf.PI * t)) * 0.5f;
+		return Lerp (start, end, temp);
+	}
+	
+	float Lerp(float start, float end, float t) {
+		return 	start + (end - start) * t;
 	}
 }

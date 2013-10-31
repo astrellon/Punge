@@ -1,8 +1,16 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
 public class Slider : MonoBehaviour {
 	
+	public class ChangeEventArgs : EventArgs {
+		public float Value;
+		public ChangeEventArgs(float value) {
+			Value = value;	
+		}
+	}
+	public event EventHandler<ChangeEventArgs> Changed;
 	protected GameObject thumb;
 	protected TextMesh valueText;
 	
@@ -15,19 +23,23 @@ public class Slider : MonoBehaviour {
 		}
 		set
 		{
+			float newValue = value;
 			if (value < MinValue) {
-				sliderValue = MinValue;
+				newValue = MinValue;
 			}
 			else if (value > MaxValue) {
-				sliderValue = MaxValue;	
+				newValue = MaxValue;	
 			}
 			else if (StepSize > 0.0f) {
 				float temp = value / StepSize;
 				temp = Mathf.Round (temp) * StepSize;
-				sliderValue = temp;
+				newValue = temp;
 			}
-			else {
-				sliderValue = value;
+			if (newValue != sliderValue) {
+				sliderValue = newValue;
+				if (Changed != null) {
+					Changed(this, new ChangeEventArgs(sliderValue));	
+				}
 			}
 		}
 	}
