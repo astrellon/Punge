@@ -70,7 +70,7 @@ public class Slider : MonoBehaviour {
 		UpdateThumb();
 	}
 	
-	void UpdateThumb() {
+	public void UpdateThumb() {
 		float percent = (SliderValue - MinValue) / (MaxValue - MinValue);
 		thumb.transform.localPosition = new Vector3((percent - 0.5f) * size, 0.0f, 0.0f);
 		valueText.text = SliderValue.ToString();

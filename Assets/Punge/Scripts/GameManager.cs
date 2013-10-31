@@ -215,8 +215,12 @@ public class GameManager : MonoBehaviour {
 			StartGame();
 		}
 		if (Time.time >= NextSpawnTime && NextSpawnTime > 0.0f) {
-			//SpawnPowerup("WidePaddle");
-			SpawnPowerup("Multipuck");
+			if (Random.value > 0.2f) {
+				SpawnPowerup("WidePaddle");
+			}
+			else {
+				SpawnPowerup("Multipuck");
+			}
 			NextSpawnTime = CalcNextSpawnTime();
 		}
 		if (!WaitingToStart) {

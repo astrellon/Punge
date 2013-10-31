@@ -3,8 +3,8 @@ using System.Collections;
 
 public class OptionValues {
 
-	public static float ArenaWidth = 22.0f;
-	public static float ArenaHeight = 16.0f;
-	public static int WinningScore = 5;
+	public static float ArenaWidth = 46.0f;
+	public static float ArenaHeight = 26.0f;
+	public static int WinningScore = 8;
 
 }
