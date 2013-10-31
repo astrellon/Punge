@@ -5,6 +5,7 @@ public class Options : MonoBehaviour {
 	
 	public Slider ArenaWidth;
 	public Slider ArenaHeight;
+	public Slider WinningScore;
 
 	// Use this for initialization
 	void Start () {
@@ -18,6 +19,12 @@ public class Options : MonoBehaviour {
 			ArenaHeight.Changed += (sender, e) => 
 			{
 				OptionValues.ArenaHeight = e.Value;
+			};
+		}
+		if (WinningScore != null) {
+			WinningScore.Changed += (sender, e) => 
+			{
+				OptionValues.WinningScore = (int)Mathf.Round (e.Value);
 			};
 		}
 	}

@@ -33,6 +33,8 @@ public class GameManager : MonoBehaviour {
 		Powerup.AddPowerup(widePaddle);
 		Powerup.AddPowerup(new Multipuck());
 		
+		WinningScore = OptionValues.WinningScore;
+		
 		if (Arena != null) {
 			Player1.Paddle = Arena.transform.FindChild("PaddleLeft").gameObject.GetComponent<Paddle>();
 			Player1.Paddle.Owner = Player1;
