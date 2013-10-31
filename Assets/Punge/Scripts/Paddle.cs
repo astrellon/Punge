@@ -7,6 +7,8 @@ public class Paddle : MonoBehaviour {
 	public float Speed = 0.2f;
 	public KeyCode UpKey = KeyCode.UpArrow;
 	public KeyCode DownKey = KeyCode.DownArrow;
+	public string UpKeyBinding = "P1Up";
+	public string DownKeyBinding = "P1Down";
 	public Player Owner { get; set; }
 	// Use this for initialization
 	void Start () {
@@ -19,9 +21,22 @@ public class Paddle : MonoBehaviour {
 		this.transform.localScale = scale;
 	}
 	
+	public KeyCode UpKeyCode() {
+		if (UpKeyBinding.Length > 0 && OptionValues.KeyBindings.ContainsKey(UpKeyBinding)) {
+			return OptionValues.KeyBindings[UpKeyBinding];
+		}
+		return UpKey;
+	}
+	public KeyCode DownKeyCode() {
+		if (DownKeyBinding.Length > 0 && OptionValues.KeyBindings.ContainsKey(DownKeyBinding)) {
+			return OptionValues.KeyBindings[DownKeyBinding];
+		}
+		return DownKey;
+	}
+	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKey(UpKey)) {
+		if (Input.GetKey(UpKeyCode())) {
 			RaycastHit hitInfo;
 			Vector3 top = this.transform.position + new Vector3(0.0f, Length * 0.5f, 0.0f);
 			Ray ray = new Ray(top, new Vector3(0, 1, 0));
@@ -32,7 +47,7 @@ public class Paddle : MonoBehaviour {
 				}
 			}
 		}
-		else if (Input.GetKey(DownKey)) {
+		else if (Input.GetKey(DownKeyCode())) {
 			RaycastHit hitInfo;
 			Vector3 bottom = this.transform.position - new Vector3(0.0f, Length * 0.5f, 0.0f);
 			Ray ray = new Ray(bottom, new Vector3(0, -1, 0));

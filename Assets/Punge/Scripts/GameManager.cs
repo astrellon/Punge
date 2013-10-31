@@ -228,10 +228,6 @@ public class GameManager : MonoBehaviour {
 			Player2.Update();
 		}
 		
-		if (Input.GetKeyDown(KeyCode.A)) {
-			SpawnPuck(0.0f, 0.0f).Go(true);	
-		}
-		
 		PressStartGUI.enabled = WaitingToStart;
 	}
 }
