@@ -29,9 +29,13 @@ public class GameManager : MonoBehaviour {
 	void Start () {
 		PuckPrefab = (GameObject)Resources.LoadAssetAtPath(@"Assets\Punge\Prefabs\Puck.prefab", typeof(GameObject));
 		
+		Player1.PlayerId = "1";
+		Player2.PlayerId = "2";
+		
 		Powerup widePaddle = new WidePaddle();
 		Powerup.AddPowerup(widePaddle);
 		Powerup.AddPowerup(new Multipuck());
+		Powerup.AddPowerup(new Bounce());
 		
 		WinningScore = OptionValues.WinningScore;
 		
@@ -56,17 +60,6 @@ public class GameManager : MonoBehaviour {
 			PressStartGUI.enabled = false;
 			WinnerGUI = UI.transform.FindChild("Winner").GetComponent<GUIText>();
 			WinnerGUI.gameObject.SetActive(false);
-			
-			StatusComponent player1Status = UI.transform.FindChild("WidePaddleGUI1").GetComponent<StatusComponent>();
-			player1Status.ForPlayer = Player1;
-			player1Status.ForPowerup = widePaddle;
-			
-			StatusComponent player2Status = UI.transform.FindChild("WidePaddleGUI2").GetComponent<StatusComponent>();
-			player2Status.ForPlayer = Player2;
-			player2Status.ForPowerup = widePaddle;
-			
-			player1Status.UpdateTextures();
-			player2Status.UpdateTextures();
 		}
 		
 		// Pucks ignore hitting other pucks.
@@ -77,6 +70,16 @@ public class GameManager : MonoBehaviour {
 		Physics.IgnoreLayerCollision(10, 10);
 		
 		MainManager = this;	
+	}
+	
+	public void RegisterStatus(StatusComponent status) {
+		status.Powerup = Powerup.FindPowerup(status.ForPowerup);
+		if (status.ForPlayer == "1") {
+			status.Player = Player1;
+		}
+		else {
+			status.Player = Player2;	
+		}
 	}
 	
 	public void SpawnPowerup(string type) {
@@ -215,13 +218,20 @@ public class GameManager : MonoBehaviour {
 			StartGame();
 		}
 		if (Time.time >= NextSpawnTime && NextSpawnTime > 0.0f) {
-			if (Random.value > 0.2f) {
+			float rand = Random.value;
+			if (rand > 0.3f) {
 				SpawnPowerup("WidePaddle");
+			}
+			else if (rand > 0.15f) {
+				SpawnPowerup("Bounce");	
 			}
 			else {
 				SpawnPowerup("Multipuck");
 			}
 			NextSpawnTime = CalcNextSpawnTime();
+		}
+		if (Input.GetKeyDown(KeyCode.A)) {
+			SpawnPowerup("Bounce");	
 		}
 		if (!WaitingToStart) {
 			Player1.Update();

@@ -33,6 +33,7 @@ public class Player {
 	public GUIText ScoreDisplay { get; set; }
 	public Paddle Paddle { get; set; }
 	public Dictionary<string, PowerupStack> PowerupStacks { get; private set; }
+	public string PlayerId { get; set; }
 	
 	public Player() {
 		Score = 0;
@@ -72,11 +73,19 @@ public class Player {
 		float time = Time.time;
 		foreach (KeyValuePair<string, PowerupStack> pair in PowerupStacks) {
 			PowerupStack stack = pair.Value;
-			if (stack.StartTime > 0 && time >= stack.StartTime + stack.Duration) {
+			if (stack.StartTime > 0 && stack.Duration > 0 && time >= stack.StartTime + stack.Duration) {
 				stack.Powerup.Deactivate(this, stack.Size);
 				stack.StartTime = 0;
 				stack.Size = 0;
 				stack.Powerup = null;
+			}
+		}
+		if (PowerupStacks.ContainsKey("Bounce")) {
+			if (PlayerId == "1" && Input.GetKeyDown(KeyCode.Q)) {
+				
+			}
+			else if (PlayerId == "2" && Input.GetKeyDown(KeyCode.W)) {
+				
 			}
 		}
 	}
