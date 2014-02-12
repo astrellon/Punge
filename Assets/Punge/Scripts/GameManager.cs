@@ -233,11 +233,26 @@ public class GameManager : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.A)) {
 			SpawnPowerup("Bounce");	
 		}
+		if (Input.GetKeyDown(KeyCode.B)) {
+			Debug.Log ("Puck bounds: " + GetPuckBounds());	
+		}
 		if (!WaitingToStart) {
 			Player1.Update();
 			Player2.Update();
 		}
 		
 		PressStartGUI.enabled = WaitingToStart;
+	}
+	
+	public Bounds GetPuckBounds()
+	{
+		if (pucks.Count > 0) {
+			Bounds bounds = pucks[0].renderer.bounds;
+			for (int i = 1; i < pucks.Count; i++) {
+				bounds.Encapsulate(pucks[i].renderer.bounds);
+			}
+			return bounds;
+		}
+		return new Bounds(new Vector3(0, 0, 0), new Vector3(0, 0, 0));;
 	}
 }

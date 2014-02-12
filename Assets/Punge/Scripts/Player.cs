@@ -82,7 +82,8 @@ public class Player {
 		}
 		if (PowerupStacks.ContainsKey("Bounce")) {
 			if (PlayerId == "1" && Input.GetKeyDown(KeyCode.Q)) {
-				
+				Bounce bounce = (Bounce)Powerup.FindPowerup("Bounce");
+				bounce.DoBounce(true);
 			}
 			else if (PlayerId == "2" && Input.GetKeyDown(KeyCode.W)) {
 				

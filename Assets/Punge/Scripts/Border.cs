@@ -24,7 +24,7 @@ public class Border : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (t < 1.0f) {
-			t += 0.1f;
+			t += Time.deltaTime;
 			renderer.material.color = Color.Lerp(Color.white, OriginalColour, t);
 		}
 	}

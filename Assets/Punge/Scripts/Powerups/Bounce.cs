@@ -20,5 +20,28 @@ public class Bounce : Powerup {
 		player.Paddle.Length -= 1.0f * stackSize;
 		player.Paddle.UpdateSize();
 	}*/
+	public bool DoBounce(bool left)
+	{
+		Bounds bounds = GameManager.MainManager.GetPuckBounds();
+		Debug.Log ("Bounds: " + bounds.ToString());
+		float boundaryPoint = 0.0f;
+		if (left) {
+			boundaryPoint = bounds.min.x;
+			if (boundaryPoint > 0.0f) {
+				return false;
+			}
+		}
+		else {
+			boundaryPoint = bounds.max.x;
+			if (boundaryPoint < 0.0f) {
+				return false;
+			}
+		}
+		if (boundaryPoint == 0.0f) {
+			return false;
+		}
+		
+		return true;
+	}
 	
 }
